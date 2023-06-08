@@ -15,6 +15,13 @@ class _LoginState extends State<Login> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final LoginService apiService = LoginService();
+  var _passwordToggle;
+
+  @override
+  void initState() {
+    super.initState();
+    _passwordToggle = true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +97,7 @@ class _LoginState extends State<Login> {
                         padding: const EdgeInsets.symmetric(horizontal: 15),
                         child: TextFormField(
                           controller: _passwordController,
+                          obscureText: _passwordToggle,
                           cursorColor: Color(0xFF146C94),
                           decoration: InputDecoration(
                             labelText: "Password",
@@ -103,6 +111,22 @@ class _LoginState extends State<Login> {
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(color: Color(0xFF146C94)),
                             ),
+                              suffixIcon: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _passwordToggle = !_passwordToggle;
+                                  });
+                                },
+                                child: Icon(
+                                  _passwordToggle
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: _passwordToggle
+                                      ? Colors.grey
+                                      : Color(0xFF146C94),
+                                  size: 20,
+                                ),
+                              )
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -130,7 +154,7 @@ class _LoginState extends State<Login> {
                                     _usernameController.text,
                                     _passwordController.text);
                                 if (token != null) {
-                                  Navigator.of(context).pushNamed('Home');
+                                  Navigator.of(context).pushNamed('/Home', arguments: _usernameController.text);
                                 } else {
                                   showDialog(
                                     context: context,

@@ -1,7 +1,35 @@
 import 'package:flutter/material.dart';
+import '../services/acceuilService.dart';
 
-class Acceuil extends StatelessWidget {
-  const Acceuil({Key? key}) : super(key: key);
+class Acceuil extends StatefulWidget {
+  final String username;
+
+  Acceuil({required this.username});
+
+  @override
+  State<Acceuil> createState() => _AcceuilState();
+}
+
+class _AcceuilState extends State<Acceuil> {
+  AccountInfo? accountInfo;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAccountInfo();
+  }
+
+  Future<void> fetchAccountInfo() async {
+    try {
+      final AccountInfo fetchedAccountInfo =
+      await AcceuilService.getAccountInfoByUsername(widget.username);
+      setState(() {
+        accountInfo = fetchedAccountInfo;
+      });
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +83,7 @@ class Acceuil extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Text(
-                            "N° de compte : 123456789123456",
+                            "N° de compte : ${accountInfo!.numCompte}",
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 15,
@@ -73,12 +101,12 @@ class Acceuil extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Text(
-                            "99990.00",
+                            accountInfo!.solde.toString(),
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold),
-                          ),
+                          )
                         ),
                       ],
                     ),

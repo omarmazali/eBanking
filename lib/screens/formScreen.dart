@@ -10,8 +10,10 @@ class FormScreen extends StatefulWidget {
   final String creanceID;
   final String creancierName;
   final String creanceName;
+  final String fname;
+  final String lname;
 
-  FormScreen({required this.creanceID, required this.creancierName, required this.creanceName});
+  FormScreen({required this.creanceID, required this.creancierName, required this.creanceName, required this.fname, required this.lname});
 
   @override
   State<FormScreen> createState() => _FormFormScreenState();
@@ -145,7 +147,7 @@ class _FormFormScreenState extends State<FormScreen> {
                       // For example, navigate to a new screen and pass the fetchedImpayes as arguments
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => ImpayeScreen(impayes: fetchedImpayes, creancierName: widget.creancierName, creanceName: widget.creanceName),
+                          builder: (context) => ImpayeScreen(impayes: fetchedImpayes, creancierName: widget.creancierName, creanceName: widget.creanceName, fname: widget.fname, lname: widget.lname),
                         ),
                       );
                     } else {

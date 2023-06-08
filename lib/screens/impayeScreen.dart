@@ -6,8 +6,10 @@ class ImpayeScreen extends StatefulWidget {
   final List<Impaye> impayes;
   final String creancierName;
   final String creanceName;
+  final String fname;
+  final String lname;
 
-  ImpayeScreen({required this.impayes, required this.creancierName, required this.creanceName});
+  ImpayeScreen({required this.impayes, required this.creancierName, required this.creanceName, required this.fname, required this.lname});
 
   @override
   _ImpayeScreenState createState() => _ImpayeScreenState();
@@ -89,7 +91,7 @@ class _ImpayeScreenState extends State<ImpayeScreen> {
               builder: (context) => Detail(
                 creancierName: widget.creanceName,
                 creanceName: widget.creancierName,
-                debiteurName: "Mohamed Hamdani",
+                debiteurName: widget.fname + " " + widget.lname,
                 dateCreance: DateTime.now(),
                 selectedImpayes: selectedImpayes,
               ),

@@ -5,15 +5,20 @@ import 'package:flutter/material.dart';
 import '../../models/creancier.dart';
 
 import '../../services/creancierSoap.dart';
+import '../services/acceuilService.dart';
 import 'creanceScreen.dart';
 
 class CreancierScreen extends StatefulWidget {
+  final String username;
+
+  CreancierScreen({required this.username});
 
   @override
   State<CreancierScreen> createState() => _CreancierScreenState();
 }
 
 class _CreancierScreenState extends State<CreancierScreen> {
+  AccountInfo? accountInfo;
 
   void updateList(String value) {
     setState(() {
@@ -22,6 +27,18 @@ class _CreancierScreenState extends State<CreancierScreen> {
               element.name!.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
+  }
+
+  Future<void> fetchAccountInfo() async {
+    try {
+      final AccountInfo fetchedAccountInfo =
+      await AcceuilService.getAccountInfoByUsername(widget.username);
+      setState(() {
+        accountInfo = fetchedAccountInfo;
+      });
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   Future<void> fetchCreanciers() async {
@@ -40,13 +57,14 @@ class _CreancierScreenState extends State<CreancierScreen> {
   void initState() {
     super.initState();
     fetchCreanciers();
+    fetchAccountInfo();
   }
 
-  void navigateToCreanceScreen(String creancierID, String creancierName) {
+  void navigateToCreanceScreen(String creancierID, String creancierName, String fname, String lname) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CreanceScreen(creancierID: creancierID, creancierName: creancierName),
+        builder: (context) => CreanceScreen(creancierID: creancierID, creancierName: creancierName, fname: fname, lname: lname),
       ),
     );
   }
@@ -108,7 +126,7 @@ class _CreancierScreenState extends State<CreancierScreen> {
                                   right: 8.0,
                                   bottom: 1.0),
                               title: Text(creancier.name),
-                              onTap: () => navigateToCreanceScreen(creancier.id, creancier.name),
+                              onTap: () => navigateToCreanceScreen(creancier.id, creancier.name, accountInfo?.fname ?? '', accountInfo?.lname ?? '',),
                               ),
                         );
                       },

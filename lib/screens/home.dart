@@ -7,19 +7,29 @@ import 'creancierScreen.dart';
 import 'operations.dart';
 
 class Home extends StatefulWidget {
+  final String username;
+
+  Home({required this.username});
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-
+  late String _username;
   int _page = 0;
-  final screens = [
-    Acceuil(),
-    Operations(),
-    CreancierScreen(),
-  ];
+  late List<Widget> screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _username = widget.username;
+    screens = [
+      Acceuil(username: _username),
+      Operations(),
+      CreancierScreen(username: _username),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
