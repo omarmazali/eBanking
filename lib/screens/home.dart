@@ -26,7 +26,7 @@ class _HomeState extends State<Home> {
     _username = widget.username;
     screens = [
       Acceuil(username: _username),
-      Operations(),
+      Operations(username: _username),
       CreancierScreen(username: _username),
     ];
   }

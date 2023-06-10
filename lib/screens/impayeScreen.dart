@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../models/impaye.dart';
 import 'detailScreen.dart';
 
 class ImpayeScreen extends StatefulWidget {
-  final List<Impaye> impayes;
+  final String id;
+  final String tel;
+  final List<Impaye?> impayes;
   final String creancierName;
   final String creanceName;
   final String fname;
   final String lname;
 
-  ImpayeScreen({required this.impayes, required this.creancierName, required this.creanceName, required this.fname, required this.lname});
+  ImpayeScreen({required this.id, required this.tel, required this.impayes, required this.creancierName, required this.creanceName, required this.fname, required this.lname});
 
   @override
   _ImpayeScreenState createState() => _ImpayeScreenState();
@@ -56,19 +59,19 @@ class _ImpayeScreenState extends State<ImpayeScreen> {
                       contentPadding: EdgeInsets.only(right: 10.0, left: 5.0),
                       dense: true,
                       title: Text(
-                        impaye.name,
+                        impaye?.name ?? '',
                         style: const TextStyle(
                           fontSize: 16.0,
                           color: Colors.black,
                         ),
                       ),
-                      secondary: Text("01/01/2023"),
-                      subtitle: Text("Price: ${impaye.price}"),
+                      secondary: Text(formatTimestamp(impaye?.date ?? ''),),
+                      subtitle: Text("Price: ${impaye?.price ?? ''}"),
                       value: isSelected,
                       onChanged: (value) {
                         setState(() {
                           if (value == true) {
-                            selectedImpayes.add(impaye);
+                            selectedImpayes.add(impaye!);
                           } else {
                             selectedImpayes.remove(impaye);
                           }
@@ -89,6 +92,8 @@ class _ImpayeScreenState extends State<ImpayeScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => Detail(
+                id: widget.id,
+                tel: widget.tel,
                 creancierName: widget.creanceName,
                 creanceName: widget.creancierName,
                 debiteurName: widget.fname + " " + widget.lname,
@@ -102,5 +107,11 @@ class _ImpayeScreenState extends State<ImpayeScreen> {
         child: Icon(Icons.check,),
       ),
     );
+  }
+
+  String formatTimestamp(String s) {
+    final dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(s));
+    final formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+    return formattedDate;
   }
 }

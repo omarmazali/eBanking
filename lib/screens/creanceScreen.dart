@@ -8,12 +8,14 @@ import 'formScreen.dart';
 
 
 class CreanceScreen extends StatefulWidget {
+  final String id;
+  final String tel;
   final String creancierID;
   final String creancierName;
   final String fname;
   final String lname;
 
-  CreanceScreen({required this.creancierID, required this.creancierName, required this.fname, required this.lname});
+  CreanceScreen({required this.id, required this.tel, required this.creancierID, required this.creancierName, required this.fname, required this.lname});
   @override
   State<CreanceScreen> createState() => _CreanceScreenState();
 }
@@ -37,11 +39,11 @@ class _CreanceScreenState extends State<CreanceScreen> {
     fetchCreancesByCreancierID(widget.creancierID);
   }
 
-  void navigateToFormScreen(String creancierID, String creancierName, String creanceName, String fname, String lname) {
+  void navigateToFormScreen(String id, String tel, String creancierID, String creancierName, String creanceName, String fname, String lname) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FormScreen(creanceID: creancierID, creancierName: creancierName, creanceName: creanceName, fname: fname, lname:lname),
+        builder: (context) => FormScreen(id:id, tel:tel, creanceID: creancierID, creancierName: creancierName, creanceName: creanceName, fname: fname, lname:lname),
       ),
     );
   }
@@ -91,7 +93,7 @@ class _CreanceScreenState extends State<CreanceScreen> {
                         bottom: 1.0,
                       ),
                       title: Text(creances[index].name),
-                      onTap: () =>  navigateToFormScreen(creances[index].id, creances[index].name, widget.creancierName, widget.fname, widget.lname),
+                      onTap: () =>  navigateToFormScreen(widget.id, widget.tel, creances[index].id, creances[index].name, widget.creancierName, widget.fname, widget.lname),
 
                       ),
                   );

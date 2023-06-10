@@ -10,7 +10,7 @@ class LoginService {
     };
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8090/client/auth/authenticate'),
+      Uri.parse('https://jabak-lah-backend.onrender.com/client/auth/authenticate'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -19,6 +19,7 @@ class LoginService {
 
     if (response.statusCode == 200) {
       final responseBody = jsonDecode(response.body);
+      print(responseBody['token']);
       return responseBody['token'];
     } else if (response.statusCode == 401) {
       throw Exception('Client not found'); // Handle the specific error case

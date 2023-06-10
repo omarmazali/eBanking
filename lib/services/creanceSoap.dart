@@ -6,7 +6,7 @@ class CreanceSoap{
 
   Future<List<Creance>> fetchCreancesByCreancierID(String creancierID) async {
     // Define the SOAP endpoint URL
-    const url = 'http://10.0.2.2:8090/ws/creanciers.wsdl';
+    const url = 'https://jabak-lah-backend.onrender.com/ws/creanciers.wsdl';
 
     // Define the SOAP request body for Get Creances By Creancier ID
     final getCreancesByCreancierIDRequest = '''<?xml version="1.0" encoding="utf-8"?>

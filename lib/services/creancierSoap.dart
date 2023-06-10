@@ -5,7 +5,7 @@ import '../models/creancier.dart';
 
 class CreancierSoap {
   Future<List<Creancier>> fetchCreanciers() async {
-    const url = 'http://10.0.2.2:8090/ws/creanciers.wsdl';
+    const url = 'https://jabak-lah-backend.onrender.com/ws/creanciers.wsdl';
     final getAllCreanciersRequest = '''<?xml version="1.0" encoding="utf-8"?>
       <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
           <soap:Body>

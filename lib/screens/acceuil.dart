@@ -22,7 +22,7 @@ class _AcceuilState extends State<Acceuil> {
   Future<void> fetchAccountInfo() async {
     try {
       final AccountInfo fetchedAccountInfo =
-      await AcceuilService.getAccountInfoByUsername(widget.username);
+          await AcceuilService.getAccountInfoByUsername(widget.username);
       setState(() {
         accountInfo = fetchedAccountInfo;
       });
@@ -83,7 +83,7 @@ class _AcceuilState extends State<Acceuil> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Text(
-                            "N° de compte : ${accountInfo!.numCompte}",
+                            "N° de compte : ${accountInfo?.numCompte ?? ''}",
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 15,
@@ -99,15 +99,14 @@ class _AcceuilState extends State<Acceuil> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: Text(
-                            accountInfo!.solde.toString(),
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
-                          )
-                        ),
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: Text(
+                              accountInfo?.solde.toString() ?? '',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            )),
                       ],
                     ),
                     SizedBox(
@@ -115,6 +114,38 @@ class _AcceuilState extends State<Acceuil> {
                     ),
                   ],
                 ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 45,
+            width: 120,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: StadiumBorder(),
+                backgroundColor: Colors.red,
+              ),
+              onPressed: () { Navigator.pushReplacementNamed(context, '/'); },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.logout,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "Logout",
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 17,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

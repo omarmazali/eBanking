@@ -7,13 +7,15 @@ import '../services/impayeSoap.dart';
 import 'impayeScreen.dart';
 
 class FormScreen extends StatefulWidget {
+  final String id;
+  final String tel;
   final String creanceID;
   final String creancierName;
   final String creanceName;
   final String fname;
   final String lname;
 
-  FormScreen({required this.creanceID, required this.creancierName, required this.creanceName, required this.fname, required this.lname});
+  FormScreen({required this.id, required this.tel, required this.creanceID, required this.creancierName, required this.creanceName, required this.fname, required this.lname});
 
   @override
   State<FormScreen> createState() => _FormFormScreenState();
@@ -73,7 +75,6 @@ class _FormFormScreenState extends State<FormScreen> {
                 children: forms
                     .map(
                       (form) => ListTile(
-                        title: Text('Form ID: ${form.id}'),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: form.champs
@@ -143,13 +144,35 @@ class _FormFormScreenState extends State<FormScreen> {
                           await impayeSoap.fetchImpayesByCreanceID(
                               widget.creanceID, credentials);
 
-                      // Do something with the fetchedImpayes
-                      // For example, navigate to a new screen and pass the fetchedImpayes as arguments
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => ImpayeScreen(impayes: fetchedImpayes, creancierName: widget.creancierName, creanceName: widget.creanceName, fname: widget.fname, lname: widget.lname),
-                        ),
-                      );
+                      if (fetchedImpayes.isEmpty) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("Pas de factures disponibles"),
+                            content: Text("Aucune facture impayée n'est disponible."),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text("OK"),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => ImpayeScreen(
+                              id: widget.id,
+                              tel: widget.tel,
+                              impayes: fetchedImpayes,
+                              creancierName: widget.creancierName,
+                              creanceName: widget.creanceName,
+                              fname: widget.fname,
+                              lname: widget.lname,
+                            ),
+                          ),
+                        );
+                      }
                     } else {
                       showDialog(
                         context: context,

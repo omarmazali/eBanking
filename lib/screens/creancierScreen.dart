@@ -60,11 +60,11 @@ class _CreancierScreenState extends State<CreancierScreen> {
     fetchAccountInfo();
   }
 
-  void navigateToCreanceScreen(String creancierID, String creancierName, String fname, String lname) {
+  void navigateToCreanceScreen(String id, String tel, String creancierID, String creancierName, String fname, String lname) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CreanceScreen(creancierID: creancierID, creancierName: creancierName, fname: fname, lname: lname),
+        builder: (context) => CreanceScreen(id:id, tel:tel, creancierID: creancierID, creancierName: creancierName, fname: fname, lname: lname),
       ),
     );
   }
@@ -126,7 +126,7 @@ class _CreancierScreenState extends State<CreancierScreen> {
                                   right: 8.0,
                                   bottom: 1.0),
                               title: Text(creancier.name),
-                              onTap: () => navigateToCreanceScreen(creancier.id, creancier.name, accountInfo?.fname ?? '', accountInfo?.lname ?? '',),
+                              onTap: () => navigateToCreanceScreen(accountInfo?.id ?? '', accountInfo?.tel ?? '', creancier.id, creancier.name, accountInfo?.fname ?? '', accountInfo?.lname ?? '',),
                               ),
                         );
                       },

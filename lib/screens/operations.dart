@@ -1,33 +1,46 @@
 import 'dart:core';
+import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
-
-import '../models/facture_model.dart';
+import 'package:untitled/services/operationService.dart';
 
 class Operations extends StatefulWidget {
+  final String username;
+
+  Operations({required this.username});
+
   @override
   State<Operations> createState() => _OperationsState();
 }
 
 class _OperationsState extends State<Operations> {
+  List<OperationInfo> operations = [];
+  List<OperationInfo> displayOperations = [];
 
-  static List<FactureModel> facture_mars = [
-    FactureModel("Recharge IAM", "20 DH",
-        "31 avr.", "-20 DH"),
-    FactureModel("Recharge IAM", "20 DH",
-        "12 avr.", "-20 DH"),
-    FactureModel("Recharge IAM", "20 DH",
-        "01 avr.", "-20 DH"),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    fetchOperations();
+  }
 
-  List display_mars = List.from(facture_mars);
+  Future<void> fetchOperations() async {
+    try {
+      final List<OperationInfo> fetchedOperations =
+          await OperationService.getOperationInfoByUsername(widget.username);
+      setState(() {
+        operations = fetchedOperations;
+        displayOperations = List.from(operations);
+      });
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   void updateList(String value) {
     setState(() {
-      display_mars = facture_mars
-          .where((element) => element.facture_title!
-          .toLowerCase()
-          .contains(value.toLowerCase()))
+      displayOperations = operations
+          .where((element) =>
+              element.type!.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
@@ -59,64 +72,97 @@ class _OperationsState extends State<Operations> {
                     prefixIconColor: Colors.blue.shade900),
               ),
               Expanded(
-                  child: display_mars.length == 0
-                      ? Center(
-                    child: Text(
-                      "No result found",
-                      style: TextStyle(
-                          color: Color(0xFF146C94),
-                          fontSize: 22.0,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  )
-                      : ListView.builder(
-                    itemCount: display_mars.length,
-                    itemBuilder: (context, index) => Card(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: Colors.black,
+                child: displayOperations.length == 0
+                    ? Center(
+                        child: Text(
+                          "No result found",
+                          style: TextStyle(
+                              color: Color(0xFF146C94),
+                              fontSize: 22.0,
+                              fontWeight: FontWeight.bold),
                         ),
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      margin: const EdgeInsets.symmetric(
-                        vertical: 5.0,
-                      ),
-                      child: ListTile(
-                          contentPadding: EdgeInsets.only(left: 20.0, right: 8.0),
-                          title: Text(
-                            display_mars[index].facture_title!,
-                            style: TextStyle(
+                      )
+                    : ListView.builder(
+                        itemCount: displayOperations.length,
+                        itemBuilder: (context, index) => Card(
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                              color: Colors.black,
+                            ),
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 5.0,
+                          ),
+                          child: ListTile(
+                            contentPadding:
+                                EdgeInsets.only(left: 20.0, right: 8.0),
+                            title: Text(
+                              displayOperations[index].type,
+                              style: TextStyle(
                                 color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text(
-                            '${display_mars[index].facture_creance!}',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          trailing: Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Text(
-                              '${display_mars[index].next_page!}',
-                              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          leading: Padding(
-                            padding: const EdgeInsets.only(top: 10.0),
-                            child: Text(
-                              '${display_mars[index].facture_url!}',
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-
+                            subtitle: Text(
+                              displayOperations[index].description,
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            trailing: Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    displayOperations[index].type == "paiement"
+                                        ? "-"
+                                        : "+",
+                                    style: TextStyle(
+                                      color: displayOperations[index].type ==
+                                              "paiement"
+                                          ? Colors.red
+                                          : Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(width: 4.0),
+                                  Text(
+                                    displayOperations[index].amount,
+                                    style: TextStyle(
+                                      color: displayOperations[index].type ==
+                                              "paiement"
+                                          ? Colors.red
+                                          : Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            leading: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: Text(
+                                formatTimestamp(displayOperations[index].date),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
+              ),
             ],
           ),
         ),
       ),
     );
   }
-}
 
+  String formatTimestamp(String date) {
+    final dateTime = DateTime.fromMillisecondsSinceEpoch(int.parse(date));
+    final formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+    return formattedDate;
+  }
+}
